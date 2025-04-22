@@ -45,6 +45,18 @@
     border-radius: 5px;
 }
 
+.remove-button {
+    position: relative;
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: #999;
+}
+.remove-button:hover {
+    color: #f00;
+}
+
 .modal {
     position: fixed;
     top: 0;

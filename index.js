@@ -4,7 +4,6 @@ const orderCoffee = document.getElementById("order-coffee");
 
 let item_key = 1;
 
-
 const addOrderItem = () => {
     const clone = template.cloneNode(true);
     clone.style.display = "block";
@@ -13,6 +12,12 @@ const addOrderItem = () => {
 
     const name = document.querySelector(`.item-${item_key} > h4`);
     name.textContent = `Напиток №${item_key}`;
+    const removeBtn = document.querySelector(`.item-${item_key} > .remove-button`);
+
+    removeBtn.addEventListener("click", ()=>{
+        clone.remove();
+    })
+
     item_key++;
 }
 
@@ -43,3 +48,11 @@ const getOrderItems = () => {
 
 closeCross.addEventListener('click', hideModal);
 overlay.addEventListener('click', hideModal);
+
+document.querySelectorAll('.remove-button').forEach(button => {
+    button.addEventListener('click', function() {
+        const beverageFieldset = this.closest('.beverage');
+        console.log(beverageFieldset);
+        beverageFieldset.remove();
+    });
+});
