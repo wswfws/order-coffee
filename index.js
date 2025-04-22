@@ -33,15 +33,16 @@ const addOrderItem = () => {
         formattedTextDiv.innerHTML = formatText(userInput);
     });
 
-    function formatText(text) {
-        const keywords = ["срочно", "быстрее", "побыстрее", "скорее", "поскорее", "очень нужно"];
-        const regex = new RegExp(keywords.join("|"), "gi");
-        const formattedText = text.replace(regex, "<b>$&</b>");
-        console.log('Original:', text, 'Formatted:', formattedText);
-        return formattedText;
-    }
-
     item_key++;
+
+}
+
+function formatText(text) {
+    const keywords = ["срочно", "быстрее", "побыстрее", "скорее", "поскорее", "очень нужно"];
+    const regex = new RegExp(keywords.join("|"), "gi");
+    const formattedText = text.replace(regex, "<b>$&</b>");
+    console.log('Original:', text, 'Formatted:', formattedText);
+    return formattedText;
 }
 
 function remove(clone) {
@@ -90,6 +91,7 @@ form.addEventListener('submit', e => {
                 <th>Напиток</th>
                 <th>Молоко</th>
                 <th>Дополнительно</th>
+                <th>Примечания</th>
             </tr>
         </thead>
         <tbody>
@@ -98,6 +100,7 @@ form.addEventListener('submit', e => {
                     <td>${beverage.type}</td>
                     <td>${beverage.milk}</td>
                     <td>${beverage.options.join(', ')}</td>
+                    <td>${beverage.notes ? formatText(beverage.notes) : ''}</td>
                 </tr>
             `).join('')}
         </tbody>
@@ -107,10 +110,10 @@ form.addEventListener('submit', e => {
     orderMessage.innerHTML = `Вы заказали ${count} ${drinkWord}<br><br>`;
     orderMessage.appendChild(table);
 
-    // Add notes to the order if they exist
+    // Add general notes to the order if they exist
     if (additionalNotes.trim()) {
         const notesHeader = document.createElement('h4');
-        notesHeader.textContent = 'Дополнительные пожелания:';
+        notesHeader.textContent = 'Общие пожелания к заказу:';
         orderMessage.appendChild(notesHeader);
 
         const notesDiv = document.createElement('div');
@@ -169,10 +172,15 @@ const getOrderItems = () => {
             }
         });
 
+        // Get notes for this beverage item
+        const notesTextarea = beverageElement.querySelector('.additional-notes');
+        const notes = notesTextarea ? notesTextarea.value.trim() : '';
+
         beverages.push({
             type,
             milk,
-            options
+            options,
+            notes
         });
     });
 
@@ -191,18 +199,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const userInput = textarea.value;
         formattedTextDiv.innerHTML = formatText(userInput);
     });
-
-    function formatText(text) {
-        const keywords = ["срочно", "быстрее", "побыстрее", "скорее", "поскорее", "очень нужно"];
-        const regex = new RegExp(`\\b(${keywords.join('|')})\\b`, 'gi');
-        return text.replace(regex, '<b>$1</b>');
-    }
 });
 
 
 const submitOrderButton = document.querySelector('.submit-order');
 const orderTimeInput = document.getElementById('orderTime');
-submitOrderButton.addEventListener('click', function() {
+submitOrderButton.addEventListener('click', function () {
     const selectedTime = orderTimeInput.value;
 
     if (!selectedTime) {
