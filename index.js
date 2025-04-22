@@ -15,6 +15,12 @@ const addOrderItem = () => {
     name.textContent = `Напиток №${item_key}`;
     const removeBtn = document.querySelector(`.item-${item_key} > .remove-button`);
 
+    // Update the name attribute for radio buttons to ensure uniqueness
+    const milkRadios = clone.querySelectorAll('input[name="milk"]');
+    milkRadios.forEach(radio => {
+        radio.setAttribute('name', `milk-${item_key}`);
+    });
+
     removeBtn.addEventListener("click", ()=>{
         remove(clone)
     })
@@ -97,7 +103,7 @@ const getOrderItems = () => {
         const typeSelect = beverageElement.querySelector('select');
         const type = typeSelect.options[typeSelect.selectedIndex].text;
 
-        const milkRadio = beverageElement.querySelector('input[name="milk"]:checked');
+        const milkRadio = beverageElement.querySelector(`input[type=radio]:checked`);
         let milk = '';
         if (milkRadio) {
             switch(milkRadio.value) {
