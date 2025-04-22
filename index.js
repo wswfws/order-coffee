@@ -15,10 +15,16 @@ const addOrderItem = () => {
     const removeBtn = document.querySelector(`.item-${item_key} > .remove-button`);
 
     removeBtn.addEventListener("click", ()=>{
-        clone.remove();
+        remove(clone)
     })
 
     item_key++;
+}
+
+function remove(clone) {
+    if (item_key > 2) {
+        clone.remove();
+    }
 }
 
 document.getElementById("add-button").addEventListener("click", addOrderItem);
