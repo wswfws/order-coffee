@@ -29,7 +29,7 @@ const addOrderItem = () => {
 }
 
 function remove(clone) {
-    if (item_key > 2) {
+    if (getOrderItems().length > 1) {
         clone.remove();
     }
 }
