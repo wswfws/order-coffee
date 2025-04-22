@@ -21,9 +21,25 @@ const addOrderItem = () => {
         radio.setAttribute('name', `milk-${item_key}`);
     });
 
-    removeBtn.addEventListener("click", ()=>{
+    removeBtn.addEventListener("click", () => {
         remove(clone)
     })
+
+    const textarea = document.querySelector(`.item-${item_key} .additional-notes`);
+    const formattedTextDiv = document.querySelector(`.item-${item_key} .formatted-text`);
+
+    textarea.addEventListener('input', () => {
+        const userInput = textarea.value;
+        formattedTextDiv.innerHTML = formatText(userInput);
+    });
+
+    function formatText(text) {
+        const keywords = ["срочно", "быстрее", "побыстрее", "скорее", "поскорее", "очень нужно"];
+        const regex = new RegExp(keywords.join("|"), "gi");
+        const formattedText = text.replace(regex, "<b>$&</b>");
+        console.log('Original:', text, 'Formatted:', formattedText);
+        return formattedText;
+    }
 
     item_key++;
 }
@@ -47,6 +63,9 @@ form.addEventListener('submit', e => {
 
     const beverages = getOrderItems();
     const count = beverages.length;
+
+    // Get additional notes if they exist
+    const additionalNotes = document.querySelector('#additional-notes')?.value || '';
 
     // Склонение слова "напиток"
     let drinkWord;
@@ -88,6 +107,18 @@ form.addEventListener('submit', e => {
     orderMessage.innerHTML = `Вы заказали ${count} ${drinkWord}<br><br>`;
     orderMessage.appendChild(table);
 
+    // Add notes to the order if they exist
+    if (additionalNotes.trim()) {
+        const notesHeader = document.createElement('h4');
+        notesHeader.textContent = 'Дополнительные пожелания:';
+        orderMessage.appendChild(notesHeader);
+
+        const notesDiv = document.createElement('div');
+        notesDiv.innerHTML = formatText(additionalNotes);
+        notesDiv.classList.add('formatted-notes');
+        orderMessage.appendChild(notesDiv);
+    }
+
     modal.classList.remove('hidden');
 });
 
@@ -106,22 +137,35 @@ const getOrderItems = () => {
         const milkRadio = beverageElement.querySelector(`input[type=radio]:checked`);
         let milk = '';
         if (milkRadio) {
-            switch(milkRadio.value) {
-                case 'usual': milk = 'обычное'; break;
-                case 'no-fat': milk = 'обезжиренное'; break;
-                case 'soy': milk = 'соевое'; break;
-                case 'coconut': milk = 'кокосовое'; break;
+            switch (milkRadio.value) {
+                case 'usual':
+                    milk = 'обычное';
+                    break;
+                case 'no-fat':
+                    milk = 'обезжиренное';
+                    break;
+                case 'soy':
+                    milk = 'соевое';
+                    break;
+                case 'coconut':
+                    milk = 'кокосовое';
+                    break;
             }
         }
 
         const optionsCheckboxes = beverageElement.querySelectorAll('input[name="options"]:checked');
         const options = Array.from(optionsCheckboxes).map(checkbox => {
-            switch(checkbox.value) {
-                case 'whipped cream': return 'взбитые сливки';
-                case 'marshmallow': return 'зефирки';
-                case 'chocolate': return 'шоколад';
-                case 'cinnamon': return 'корица';
-                default: return checkbox.value;
+            switch (checkbox.value) {
+                case 'whipped cream':
+                    return 'взбитые сливки';
+                case 'marshmallow':
+                    return 'зефирки';
+                case 'chocolate':
+                    return 'шоколад';
+                case 'cinnamon':
+                    return 'корица';
+                default:
+                    return checkbox.value;
             }
         });
 
@@ -137,6 +181,23 @@ const getOrderItems = () => {
 
 closeCross.addEventListener('click', hideModal);
 overlay.addEventListener('click', hideModal);
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const textarea = document.querySelector('#additional-notes');
+    const formattedTextDiv = document.querySelector('#formatted-text');
+
+    textarea.addEventListener('input', () => {
+        const userInput = textarea.value;
+        formattedTextDiv.innerHTML = formatText(userInput);
+    });
+
+    function formatText(text) {
+        const keywords = ["срочно", "быстрее", "побыстрее", "скорее", "поскорее", "очень нужно"];
+        const regex = new RegExp(`\\b(${keywords.join('|')})\\b`, 'gi');
+        return text.replace(regex, '<b>$1</b>');
+    }
+});
 
 
 const submitOrderButton = document.querySelector('.submit-order');
