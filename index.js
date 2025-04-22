@@ -137,3 +137,28 @@ const getOrderItems = () => {
 
 closeCross.addEventListener('click', hideModal);
 overlay.addEventListener('click', hideModal);
+
+
+const submitOrderButton = document.querySelector('.submit-order');
+const orderTimeInput = document.getElementById('orderTime');
+submitOrderButton.addEventListener('click', function() {
+    const selectedTime = orderTimeInput.value;
+
+    if (!selectedTime) {
+        orderTimeInput.classList.add('error');
+        alert('Пожалуйста, выберите время заказа');
+        return;
+    }
+
+    const now = new Date();
+    const currentHours = now.getHours().toString().padStart(2, '0');
+    const currentMinutes = now.getMinutes().toString().padStart(2, '0');
+    const currentTime = `${currentHours}:${currentMinutes}`;
+
+    if (selectedTime < currentTime) {
+        orderTimeInput.classList.add('error');
+        alert('Мы не умеем перемещаться во времени. Выберите время позже, чем текущее');
+    } else {
+        hideModal();
+    }
+});
